@@ -4,12 +4,14 @@ import me.kr1s_d.commandframework.objects.SubCommand;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.*;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class CommandManager implements CommandExecutor, TabCompleter {
+    private JavaPlugin plugin;
     private final List<SubCommand> loadedCommands;
     private final List<String> tabComplete;
     private String defaultCommandWrongArgumentMessage;
@@ -18,8 +20,11 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     private final String command;
     private String prefix;
     private final String[] aliases;
+    private Runnable defaultCommandAction;
+    private boolean hasDefaultCommandAction;
 
-    public CommandManager(String command, String... aliases){
+    public CommandManager(JavaPlugin plugin, String command, String... aliases){
+        this.plugin = plugin;
         this.loadedCommands = new ArrayList<>();
         this.tabComplete = new ArrayList<>();
         this.defaultCommandWrongArgumentMessage = "&cWrong Argument!";
@@ -27,6 +32,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         this.noPlayerMessage = "&cYou are not a Player!";
         this.command = command;
         this.aliases = aliases;
+        this.hasDefaultCommandAction = false;
         this.prefix = "PREFIX > ";
         try {
             Bukkit.getPluginCommand(command).setTabCompleter(this);
@@ -44,6 +50,10 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if(args.length == 0 && hasDefaultCommandAction){
+            Bukkit.getScheduler().runTask(plugin, defaultCommandAction);
+            return true;
+        }
         if (args.length == 0) {
             sender.sendMessage(colora(prefix + defaultCommandWrongArgumentMessage));
             return true;
@@ -114,5 +124,10 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
     private String colora(String str){
         return ChatColor.translateAlternateColorCodes('&', str);
+    }
+
+    public void setDefaultCommandAction(Runnable defaultCommandAction) {
+        this.hasDefaultCommandAction = true;
+        this.defaultCommandAction = defaultCommandAction;
     }
 }
