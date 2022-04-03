@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CommandManager implements CommandExecutor, TabCompleter {
-    private JavaPlugin plugin;
+    private final JavaPlugin plugin;
     private final List<SubCommand> loadedCommands;
     private final List<String> tabComplete;
     private String defaultCommandWrongArgumentMessage;
@@ -23,7 +23,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     private Runnable defaultCommandAction;
     private boolean hasDefaultCommandAction;
 
-    public CommandManager(JavaPlugin plugin, String command, String... aliases){
+    public CommandManager(JavaPlugin plugin, String command, String prefix, String... aliases){
         this.plugin = plugin;
         this.loadedCommands = new ArrayList<>();
         this.tabComplete = new ArrayList<>();
@@ -33,7 +33,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         this.command = command;
         this.aliases = aliases;
         this.hasDefaultCommandAction = false;
-        this.prefix = "PREFIX > ";
+        this.prefix = prefix;
         try {
             Bukkit.getPluginCommand(command).setTabCompleter(this);
             Bukkit.getPluginCommand(command).setExecutor(this);
