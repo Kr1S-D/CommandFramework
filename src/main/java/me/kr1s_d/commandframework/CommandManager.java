@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class CommandManager implements CommandExecutor, TabCompleter {
     private final JavaPlugin plugin;
@@ -20,7 +21,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     private final String command;
     private String prefix;
     private final String[] aliases;
-    private Runnable defaultCommandAction;
+    private Consumer<CommandSender> commandSenderConsumer;
     private boolean hasDefaultCommandAction;
 
     public CommandManager(JavaPlugin plugin, String command, String prefix, String... aliases){
@@ -51,7 +52,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(args.length == 0 && hasDefaultCommandAction){
-            Bukkit.getScheduler().runTask(plugin, defaultCommandAction);
+            commandSenderConsumer.accept(sender);
             return true;
         }
         if (args.length == 0) {
@@ -126,8 +127,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         return ChatColor.translateAlternateColorCodes('&', str);
     }
 
-    public void setDefaultCommandAction(Runnable defaultCommandAction) {
-        this.hasDefaultCommandAction = true;
-        this.defaultCommandAction = defaultCommandAction;
+    public void onSenderBaseCommand(Consumer<CommandSender> senderConsumer) {
+        this.commandSenderConsumer = senderConsumer;
     }
 }
