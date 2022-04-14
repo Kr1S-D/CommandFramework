@@ -6,15 +6,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class CommandManager implements CommandExecutor, TabCompleter {
-    private final JavaPlugin plugin;
     private final List<SubCommand> loadedCommands;
-    private final List<String> tabComplete;
+    private final Set<String> tabComplete;
     private String defaultCommandWrongArgumentMessage;
     private String noPermsMessage;
     private String noPlayerMessage;
@@ -22,12 +19,11 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     private String prefix;
     private final String[] aliases;
     private Consumer<CommandSender> commandSenderConsumer;
-    private boolean hasDefaultCommandAction;
+    private final boolean hasDefaultCommandAction;
 
-    public CommandManager(JavaPlugin plugin, String command, String prefix, String... aliases){
-        this.plugin = plugin;
+    public CommandManager(String command, String prefix, String... aliases){
         this.loadedCommands = new ArrayList<>();
-        this.tabComplete = new ArrayList<>();
+        this.tabComplete = new HashSet<>();
         this.defaultCommandWrongArgumentMessage = "&cWrong Argument!";
         this.noPermsMessage = "&cNo permission!";
         this.noPlayerMessage = "&cYou are not a Player!";
@@ -92,7 +88,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
                 }
             }
             if(args.length == 1) {
-                return tabComplete;
+                return new ArrayList<>(tabComplete);
             }
         }
         return null;
