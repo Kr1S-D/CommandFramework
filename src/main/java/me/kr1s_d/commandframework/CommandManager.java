@@ -19,7 +19,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     private String prefix;
     private final String[] aliases;
     private Consumer<CommandSender> commandSenderConsumer;
-    private final boolean hasDefaultCommandAction;
+    private boolean hasDefaultCommandAction;
 
     public CommandManager(String command, String prefix, String... aliases){
         this.loadedCommands = new ArrayList<>();
@@ -125,5 +125,6 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
     public void onSenderBaseCommand(Consumer<CommandSender> senderConsumer) {
         this.commandSenderConsumer = senderConsumer;
+        this.hasDefaultCommandAction = true;
     }
 }
