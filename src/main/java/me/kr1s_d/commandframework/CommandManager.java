@@ -4,7 +4,6 @@ import me.kr1s_d.commandframework.objects.SubCommand;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.*;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -12,7 +11,7 @@ import java.util.function.Consumer;
 public class CommandManager implements CommandExecutor, TabCompleter {
     private final List<SubCommand> loadedCommands;
     private final Set<String> tabComplete;
-    private String defaultCommandWrongArgumentMessage;
+    private String wrongArgumentMessage;
     private String noPermsMessage;
     private String noPlayerMessage;
     private final String command;
@@ -24,9 +23,9 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     public CommandManager(String command, String prefix, String... aliases){
         this.loadedCommands = new ArrayList<>();
         this.tabComplete = new HashSet<>();
-        this.defaultCommandWrongArgumentMessage = "&cWrong Argument!";
-        this.noPermsMessage = "&cNo permission!";
-        this.noPlayerMessage = "&cYou are not a Player!";
+        this.wrongArgumentMessage = "&cYou entered a wrong argument!";
+        this.noPermsMessage = "&cYou don't have enough permissions to do this command!";
+        this.noPlayerMessage = "&cOnly players can do this command!";
         this.command = command;
         this.aliases = aliases;
         this.hasDefaultCommandAction = false;
@@ -52,12 +51,12 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             return true;
         }
         if (args.length == 0) {
-            sender.sendMessage(colora(prefix + defaultCommandWrongArgumentMessage));
+            sender.sendMessage(colora(prefix + wrongArgumentMessage));
             return true;
         }
         SubCommand cmd = getSubCommandFromArgs(args[0]);
         if(cmd == null){
-            sender.sendMessage(colora(prefix + defaultCommandWrongArgumentMessage));
+            sender.sendMessage(colora(prefix + wrongArgumentMessage));
             return true;
         }
         if (args[0].equals(cmd.getSubCommandId()) && args.length == cmd.argsSize()) {
@@ -73,7 +72,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             }
             return true;
         } else {
-            sender.sendMessage(colora(prefix + defaultCommandWrongArgumentMessage));
+            sender.sendMessage(colora(prefix + wrongArgumentMessage));
         }
         return false;
     }
@@ -103,8 +102,8 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         return null;
     }
 
-    public void setDefaultCommandWrongArgumentMessage(String defaultCommandWrongArgumentMessage) {
-        this.defaultCommandWrongArgumentMessage = defaultCommandWrongArgumentMessage;
+    public void setWrongArgumentMessage(String wrongArgumentMessage) {
+        this.wrongArgumentMessage = wrongArgumentMessage;
     }
 
     public void setNoPermsMessage(String noPermsMessage) {
