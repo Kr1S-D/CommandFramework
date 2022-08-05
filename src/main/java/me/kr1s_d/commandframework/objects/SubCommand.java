@@ -12,7 +12,7 @@ public interface SubCommand {
 
     String getPermission();
 
-    int argsSize();
+    int minArgs();
 
     Map<Integer, List<String>> getTabCompleter();
 

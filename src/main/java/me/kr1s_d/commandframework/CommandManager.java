@@ -59,7 +59,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             sender.sendMessage(colora(prefix + wrongArgumentMessage));
             return true;
         }
-        if (args[0].equals(cmd.getSubCommandId()) && args.length == cmd.argsSize()) {
+        if (args[0].equals(cmd.getSubCommandId()) && args.length >= cmd.minArgs()) {
             if (!cmd.allowedConsole() && sender instanceof ConsoleCommandSender) {
                 sender.sendMessage(colora(prefix + noPlayerMessage));
                 return true;
