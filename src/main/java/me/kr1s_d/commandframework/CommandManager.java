@@ -82,8 +82,8 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         if (command.getName().equals(this.command) || Arrays.stream(aliases).filter(a -> a.equals(command.getName())).count() == 1) {
             SubCommand subCommand = getSubCommandFromArgs(args[0]);
             if (subCommand != null && args[0].equals(subCommand.getSubCommandId())) {
-                if (subCommand.getTabCompleter() != null) {
-                    return subCommand.getTabCompleter().get(args.length -1);
+                if (subCommand.getTabCompleter(sender, command, alias, args) != null) {
+                    return subCommand.getTabCompleter(sender, command, alias, args).get(args.length -1);
                 }
             }
             if(args.length == 1) {

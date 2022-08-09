@@ -1,5 +1,6 @@
 package me.kr1s_d.commandframework.objects;
 
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface SubCommand {
 
     int minArgs();
 
-    Map<Integer, List<String>> getTabCompleter();
+    Map<Integer, List<String>> getTabCompleter(CommandSender sender, Command command, String alias, String[] args);
 
     boolean allowedConsole();
 }
