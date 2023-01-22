@@ -81,6 +81,8 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (command.getName().equals(this.command) || Arrays.stream(aliases).filter(a -> a.equals(command.getName())).count() == 1) {
             SubCommand subCommand = getSubCommandFromArgs(args[0]);
+            //tab complete visibile solo se hai permesso
+            if(subCommand != null && sender.hasPermission(subCommand.getPermission())) return new ArrayList<>();
             if (subCommand != null && args[0].equals(subCommand.getSubCommandId())) {
                 if (subCommand.getTabCompleter(sender, command, alias, args) != null) {
                     return subCommand.getTabCompleter(sender, command, alias, args).get(args.length -1);
